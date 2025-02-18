@@ -27,4 +27,4 @@ scripts: <br>
 ㅤㅤㅤcompile: pyinstaller --onefile $file <br>
     } <br>
 
-to run it use ```python runtime-sharp.py <filename>.shrp
+to run it use ```python runtime-sharp.py <filename>.shrp```
