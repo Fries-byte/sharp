@@ -25,3 +25,5 @@ scripts: <br>
       hello: echo hello world, /* or */ <br>
       saynum: echo $num <br>
     } <br>
+
+to run it use ```python runtime-sharp.py <filename>.shrp
