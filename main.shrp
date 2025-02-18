@@ -3,9 +3,11 @@ type: "compiled" /* direct will let you able to use the scripts, not the same as
 variables: { 
     type = String, 
     value = hello world!
+    file = $compile
 }
 
 scripts: { 
     type: echo $type,
     value: echo $value
+    compile: pyinstaller --onefile $file
 }
