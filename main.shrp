@@ -1,0 +1,11 @@
+type: "compiled" /* direct will let you able to use the scripts, not the same as compiled */
+
+variables: { 
+    type = String, 
+    value = hello world!
+}
+
+scripts: { 
+    type: echo $type,
+    value: echo $value
+}
