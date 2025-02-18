@@ -22,9 +22,9 @@ variables: <br>
 scripts: <br>
  To use variables, use: <br>
     scripts: { <br>
-‎      hello: echo hello world, /* or */ <br>
-      saynum: echo $num /* or */ <br>
-      compile: pyinstaller --onefile $file <br>
+ㅤㅤㅤhello: echo hello world, /* or */ <br>
+ㅤㅤㅤsaynum: echo $num /* or */ <br>
+ㅤㅤㅤcompile: pyinstaller --onefile $file <br>
     } <br>
 
 to run it use ```python runtime-sharp.py <filename>.shrp
