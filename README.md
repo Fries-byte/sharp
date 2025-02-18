@@ -15,15 +15,16 @@ here are all the current keywords: ```type, variables, scripts```, and comments 
 variables: <br>
  To use variables, use: <br>
     variables: {  <br>
-        hello = world,  <br>
-        num = 69 <br>
+‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ hello = world,  <br>
+‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ num = 69 <br>
     }
 
 scripts: <br>
  To use variables, use: <br>
     scripts: { <br>
-      hello: echo hello world, /* or */ <br>
-      saynum: echo $num <br>
+‎      hello: echo hello world, /* or */ <br>
+      saynum: echo $num /* or */ <br>
+      compile: pyinstaller --onefile $file <br>
     } <br>
 
 to run it use ```python runtime-sharp.py <filename>.shrp
