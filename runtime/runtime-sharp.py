@@ -13,6 +13,7 @@ def parse_shrp_file(file_path):
     data = {
         "scripts": {},
         "variables": {},
+        "type": "direct",
         "": "Compiled to json with Sharp"
     }
     current_section = None
@@ -20,6 +21,10 @@ def parse_shrp_file(file_path):
     for line in content.split('\n'):
         line = line.strip()
         if not line:
+            continue
+        
+        if line.startswith("type:"):
+            data["type"] = line.split(":", 1)[1].strip().strip('"')
             continue
         
         if line.endswith(": {"):
@@ -46,6 +51,11 @@ def parse_shrp_file(file_path):
 
     return data
 
+def compile_to_json(shrp_data, output_path):
+    with open(output_path, 'w') as json_file:
+        json.dump(shrp_data, json_file, indent=4)
+    print(f"Compiled to {output_path}")
+
 def run_script(script_name, shrp_data, args):
     variables = shrp_data.get("variables", {})
     scripts = shrp_data.get("scripts", {})
@@ -54,8 +64,8 @@ def run_script(script_name, shrp_data, args):
         print(f"Error: Script '{script_name}' not found.")
         return
     
-    if args:
-        variables["save"] = args[0]
+    for i, arg in enumerate(args):
+        variables[f"{script_name}&&{i+1}"] = arg
 
     command = scripts[script_name]
 
@@ -80,14 +90,20 @@ def main():
 
     shrp_data = parse_shrp_file(shrp_file)
 
-    if len(sys.argv) > 1:
-        script_name = sys.argv[1]
-        args = sys.argv[2:]
-        run_script(script_name, shrp_data, args)
+    if shrp_data.get("type") == "compiled":
+        json_file_name = shrp_file.replace('.shrp', '.json')
+        compile_to_json(shrp_data, json_file_name)
+    elif shrp_data.get("type") == "direct":
+        if len(sys.argv) > 1:
+            script_name = sys.argv[1]
+            args = sys.argv[2:]
+            run_script(script_name, shrp_data, args)
+        else:
+            print("Available scripts:")
+            for script in shrp_data.get("scripts", {}):
+                print(f"  - {script}\n  python <this_file_name>.py {script}")
     else:
-        print("Available scripts:")
-        for script in shrp_data.get("scripts", {}):
-            print(f"  - {script}")
+        print(f"Error: Unknown type '{shrp_data.get('type')}'.")
 
 if __name__ == "__main__":
     main()
