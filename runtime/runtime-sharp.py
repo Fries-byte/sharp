@@ -15,18 +15,17 @@ def parse_shrp_file(file_path):
         "variables": {},
         "": "Compiled to json with Sharp"
     }
+    script_type = "compiled"
     current_section = None
     inside_block = False
-    temp_dict = {} 
-    script_type = "compiled"
+    temp_dict = {}
 
     for line in content.split('\n'):
         line = line.strip()
         if not line:
             continue
         
-
-        if line.startswith("type:"):
+        if line.startswith("type:") and not inside_block:
             script_type = line.split(":", 1)[1].strip().strip('"')
             continue
 
@@ -42,6 +41,7 @@ def parse_shrp_file(file_path):
                 data[current_section] = temp_dict
             current_section = None
             continue
+        
         elif inside_block and current_section == "scripts":
             if ":" in line:
                 key, value = line.split(":", 1)
@@ -70,8 +70,6 @@ def run_script(script_name, shrp_data):
 
     for var, value in variables.items():
         command = command.replace(f"${var}", value)
-
-    print(f"Running script '{script_name}': {command}")
     
     try:
         subprocess.run(command, shell=True, check=True)
@@ -91,14 +89,18 @@ def main():
 
     shrp_data, script_type = parse_shrp_file(shrp_file)
 
-    if len(sys.argv) > 1:
-        script_name = " ".join(sys.argv[1:])
-        run_script(script_name, shrp_data)
+    if script_type == "direct":
+        if len(sys.argv) > 1:
+            script_name = " ".join(sys.argv[1:])
+            run_script(script_name, shrp_data)
+        else:
+            print("Available scripts:")
+            for script in shrp_data.get("scripts", {}):
+                print(f"  - {script}")
     else:
-        if script_type == "compiled":
-            json_file_name = shrp_file.replace('.shrp', '.json')
-            compile_to_json(shrp_data, json_file_name)
-            print(f"Compiled {shrp_file} to {json_file_name}")
+        json_file_name = shrp_file.replace('.shrp', '.json')
+        compile_to_json(shrp_data, json_file_name)
+        print(f"Compiled {shrp_file} to {json_file_name}")
 
 if __name__ == "__main__":
     main()
