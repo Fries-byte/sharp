@@ -77,6 +77,18 @@ def run_script(script_name, shrp_data, args):
     except subprocess.CalledProcessError as e:
         print(f"Error running script '{script_name}': {e}")
 
+def import_variables(import_path, shrp_data):
+    with open(import_path, 'r') as file:
+        content = file.read()
+    
+    import_data = parse_shrp_file(import_path)
+    
+    for key, value in import_data.get("variables", {}).items():
+        shrp_data["variables"][key] = value
+    
+    for key, value in import_data.get("scripts", {}).items():
+        shrp_data["scripts"][key] = value
+
 def main():
     shrp_file = None
     for file_name in os.listdir('.'):
@@ -89,6 +101,14 @@ def main():
         return
 
     shrp_data = parse_shrp_file(shrp_file)
+
+    if "import" in shrp_data.get("variables", {}):
+        import_path = shrp_data["variables"]["import"]
+        if os.path.exists(import_path):
+            import_variables(import_path, shrp_data)
+        else:
+            print(f"Error: Import file '{import_path}' not found.")
+            return
 
     if shrp_data.get("type") == "compiled":
         json_file_name = shrp_file.replace('.shrp', '.json')
