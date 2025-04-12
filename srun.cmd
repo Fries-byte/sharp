@@ -1,1 +1,1 @@
-python 
+python ./runtime/c.py %*
